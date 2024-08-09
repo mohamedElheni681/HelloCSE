@@ -44,8 +44,6 @@ class AdminTest extends TestCase
             'password' => 'password',
         ]);
 
-        $response->dump(); // Cela affichera la réponse JSON dans la console
-
         $response->assertStatus(200);
         $response->assertJsonStructure(['token']);
     }
