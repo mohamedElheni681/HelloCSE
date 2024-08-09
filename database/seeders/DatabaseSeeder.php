@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Domain\Entities\Admin;
+use App\Domain\Entities\Profil;
 
 class DatabaseSeeder extends Seeder
 {
@@ -12,11 +13,24 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
+        // Créer un admin
+        $admin = Admin::factory()->create([
+            'name' => 'Admin A',
+            'email' => 'admin@gmail.com',
+            'password' => bcrypt('password'), 
+        ]);
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        // Créer 5 profils pour cet admin
+        $profils = Profil::factory(5)->create([
+            'admin_id' => $admin->id,
+        ]);
+
+        // Ajouter un commentaire à chaque profil créé
+        foreach ($profils as $profil) {
+            $profil->commentaires()->create([
+                'contenu' => 'Ceci est un commentaire.',
+                'admin_id' => $admin->id,
+            ]);
+        }
     }
 }
