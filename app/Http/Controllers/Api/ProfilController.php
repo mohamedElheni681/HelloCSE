@@ -49,11 +49,14 @@ class ProfilController extends Controller
      *     description="Créer un nouveau profil",
      *     @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(
-     *             @OA\Property(property="nom", type="string", example="Doe"),
-     *             @OA\Property(property="prenom", type="string", example="John"),
-     *             @OA\Property(property="image", type="string", format="binary"),
-     *             @OA\Property(property="statut", type="string", example="actif")
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 @OA\Property(property="nom", type="string", example="Doe"),
+     *                 @OA\Property(property="prenom", type="string", example="John"),
+     *                 @OA\Property(property="image", type="file"),
+     *                 @OA\Property(property="statut", type="string", example="actif")
+     *             )
      *         )
      *     ),
      *     @OA\Response(
@@ -80,57 +83,56 @@ class ProfilController extends Controller
     }
 
     /**
- * @OA\Get(
- *     path="/api/profils",
- *     tags={"Profils"},
- *     summary="Lister les profils actifs",
- *     description="Lister les profils actifs avec pagination",
- *     @OA\Parameter(
- *         name="per_page",
- *         in="query",
- *         required=false,
- *         @OA\Schema(type="integer", default=15),
- *         description="Nombre de résultats par page"
- *     ),
- *     @OA\Response(
- *         response=200,
- *         description="Liste des profils actifs paginée",
- *         @OA\JsonContent(
- *             @OA\Property(property="data", type="array",
- *                 @OA\Items(
- *                     @OA\Property(property="id", type="integer", example=1),
- *                     @OA\Property(property="nom", type="string", example="Doe"),
- *                     @OA\Property(property="prenom", type="string", example="John"),
- *                     @OA\Property(property="image", type="string", example="image.jpg"),
- *                     @OA\Property(property="created_at", type="string", format="date-time"),
- *                     @OA\Property(property="updated_at", type="string", format="date-time")
- *                 )
- *             ),
- *             @OA\Property(property="links", type="object",
- *                 @OA\Property(property="first", type="string", example="http://example.com?page=1"),
- *                 @OA\Property(property="last", type="string", example="http://example.com?page=10"),
- *                 @OA\Property(property="prev", type="string", example="null"),
- *                 @OA\Property(property="next", type="string", example="http://example.com?page=2")
- *             ),
- *             @OA\Property(property="meta", type="object",
- *                 @OA\Property(property="current_page", type="integer", example=1),
- *                 @OA\Property(property="from", type="integer", example=1),
- *                 @OA\Property(property="last_page", type="integer", example=10),
- *                 @OA\Property(property="path", type="string", example="http://example.com"),
- *                 @OA\Property(property="per_page", type="integer", example=15),
- *                 @OA\Property(property="to", type="integer", example=15),
- *                 @OA\Property(property="total", type="integer", example=150)
- *             )
- *         )
- *     ),
- *     @OA\Response(
- *         response=401,
- *         description="Non autorisé"
- *     ),
- *     security={{"sanctum":{}}}
- * )
- */
-
+     * @OA\Get(
+     *     path="/api/profils",
+     *     tags={"Profils"},
+     *     summary="Lister les profils actifs",
+     *     description="Lister les profils actifs avec pagination",
+     *     @OA\Parameter(
+     *         name="per_page",
+     *         in="query",
+     *         required=false,
+     *         @OA\Schema(type="integer", default=15),
+     *         description="Nombre de résultats par page"
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Liste des profils actifs paginée",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="data", type="array",
+     *                 @OA\Items(
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="nom", type="string", example="Doe"),
+     *                     @OA\Property(property="prenom", type="string", example="John"),
+     *                     @OA\Property(property="image", type="string", example="image.jpg"),
+     *                     @OA\Property(property="created_at", type="string", format="date-time"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time")
+     *                 )
+     *             ),
+     *             @OA\Property(property="links", type="object",
+     *                 @OA\Property(property="first", type="string", example="http://example.com?page=1"),
+     *                 @OA\Property(property="last", type="string", example="http://example.com?page=10"),
+     *                 @OA\Property(property="prev", type="string", example="null"),
+     *                 @OA\Property(property="next", type="string", example="http://example.com?page=2")
+     *             ),
+     *             @OA\Property(property="meta", type="object",
+     *                 @OA\Property(property="current_page", type="integer", example=1),
+     *                 @OA\Property(property="from", type="integer", example=1),
+     *                 @OA\Property(property="last_page", type="integer", example=10),
+     *                 @OA\Property(property="path", type="string", example="http://example.com"),
+     *                 @OA\Property(property="per_page", type="integer", example=15),
+     *                 @OA\Property(property="to", type="integer", example=15),
+     *                 @OA\Property(property="total", type="integer", example=150)
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Non autorisé"
+     *     ),
+     *     security={{"sanctum":{}}}
+     * )
+     */
     public function index(Request $request)
     {
         $perPage = $request->input('per_page', 15); 
@@ -157,11 +159,14 @@ class ProfilController extends Controller
      *     ),
      *     @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(
-     *             @OA\Property(property="nom", type="string", example="Doe"),
-     *             @OA\Property(property="prenom", type="string", example="John"),
-     *             @OA\Property(property="image", type="string", format="binary"),
-     *             @OA\Property(property="statut", type="string", example="actif")
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 @OA\Property(property="nom", type="string", example="Doe"),
+     *                 @OA\Property(property="prenom", type="string", example="John"),
+     *                 @OA\Property(property="image", type="file"),
+     *                 @OA\Property(property="statut", type="string", example="actif")
+     *             )
      *         )
      *     ),
      *     @OA\Response(
